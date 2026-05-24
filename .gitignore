@@ -9,10 +9,23 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 
-# User core
-/user/core/vendor
-/user/core/node_modules
+# Env files
+.env
+.env.*
 /user/core/.env
+/user/core/.env.*
+
+# Storage & logs
+/user/core/storage/debugbar/*
+/user/core/storage/framework/views/*
+/user/core/storage/framework/cache/*
+/user/core/storage/framework/sessions/*
+/user/core/storage/logs/*
+/storage/debugbar/*
+/storage/framework/views/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/logs/*
 
 # OS
 .DS_Store
@@ -23,3 +36,4 @@ Thumbs.db
 
 # Zip files
 *.zip
+

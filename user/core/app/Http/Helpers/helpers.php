@@ -173,9 +173,14 @@ function sendGeneralMail($data)
         @mail($data['email'], $data['subject'], $data['message'], $headers);
     } else {
         $mail = new PHPMailer(true);
+        $smtpDebugLog = '';
 
         try {
             $mail->isSMTP();
+            $mail->SMTPDebug = 2;
+            $mail->Debugoutput = function($str, $level) use (&$smtpDebugLog) {
+                $smtpDebugLog .= $str . "\n";
+            };
             $mail->Host       = $general->email_config->smtp_host;
             $mail->SMTPAuth   = true;
             $mail->Username   = $general->email_config->smtp_username;
@@ -195,7 +200,7 @@ function sendGeneralMail($data)
             $mail->Body    = $data['message'];
             $mail->send();
         } catch (Exception $e) {
-            throw new Exception($e);
+            throw new Exception("SMTP Error: " . $e->getMessage() . "\nSMTP Debug Transcript:\n" . $smtpDebugLog, 0, $e);
         }
     }
 }
@@ -224,9 +229,14 @@ function sendMail($key, array $data, $user)
         @mail($user->email, $template->subject, $message, $headers);
     } else {
         $mail = new PHPMailer(true);
+        $smtpDebugLog = '';
 
         try {
             $mail->isSMTP();
+            $mail->SMTPDebug = 2;
+            $mail->Debugoutput = function($str, $level) use (&$smtpDebugLog) {
+                $smtpDebugLog .= $str . "\n";
+            };
             $mail->Host       = $general->email_config->smtp_host;
             $mail->SMTPAuth   = true;
             $mail->Username   = $general->email_config->smtp_username;
@@ -246,7 +256,7 @@ function sendMail($key, array $data, $user)
             $mail->Body    = $message;
             $mail->send();
         } catch (Exception $e) {
-            throw new Exception($e);
+            throw new Exception("SMTP Error: " . $e->getMessage() . "\nSMTP Debug Transcript:\n" . $smtpDebugLog, 0, $e);
         }
     }
 }

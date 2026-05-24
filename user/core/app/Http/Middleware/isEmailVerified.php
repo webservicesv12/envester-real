@@ -44,9 +44,14 @@ class isEmailVerified
                 @mail($data['email'], $data['subject'], $data['message'], $headers);
             } else {
                 $mail = new PHPMailer(true);
+                $smtpDebugLog = '';
 
                 try {
                     $mail->isSMTP();
+                    $mail->SMTPDebug = 2;
+                    $mail->Debugoutput = function($str, $level) use (&$smtpDebugLog) {
+                        $smtpDebugLog .= $str . "\n";
+                    };
                     $mail->Host       = $general->email_config->smtp_host;
                     $mail->SMTPAuth   = true;
                     $mail->Username   = $general->email_config->smtp_username;
@@ -66,8 +71,7 @@ class isEmailVerified
                     $mail->Body    = $data['message'];
                     $mail->send();
                 } catch (Exception $e) {
-                    
-                    throw new Exception($e);
+                    throw new Exception("SMTP Error: " . $e->getMessage() . "\nSMTP Debug Transcript:\n" . $smtpDebugLog, 0, $e);
                 }
             }
             return redirect()->route('user.authentication.verify');
